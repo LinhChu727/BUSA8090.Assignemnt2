@@ -1,0 +1,54 @@
+Q1a
+#Download the world_x database into my AWS instance
+curl -o world_x-db.tar.gz https://downloads.mysql.com/docs/world_x-db.tar.gz
+ ]
+#Extract the world_x contents
+tar -xzvf world_x-db.tar.gz
+
+#Now as `A3T1`, verify that the new database exists and list its tables:
+mysql> use world_x;
+mysql> show tables;
+
+Q1b 
+mysql> SELECT
+c.Name Country,
+l.Percentage,
+a.Name Capital
+FROM countrylanguage l
+INNER JOIN country c ON l.CountryCode = c.Code
+INNER JOIN city a ON c.Capital = a.ID
+WHERE
+l.Language = "English"
+AND l.Percentage > 50;
+
+Q2 R Script
+#Required packages
+library(ggplot2) #Used to plot data
+library(tidyverse) #Can be used to tidy up the data if required like for eg '%>%'
+> vaccination_rollout= data.frame(Countries=c("United States", "China", "India", "United Kingdom", "Brazil", "Germany", "Turkey", "France", "Australia"), Doses=c(213.39, 195.02, 127.13, 43.46, 33.81, 22.94, 20.28, 17.45, 1.65))
+> View(vaccination_rollout)
+> summary(vaccination_rollout)
+  Countries             Doses       
+ Length:9           Min.   :  1.65  
+ Class :character   1st Qu.: 20.28  
+ Mode  :character   Median : 33.81  
+                    Mean   : 75.01  
+                    3rd Qu.:127.13  
+                    Max.   :213.39 
+ggplot(vaccination_rollout, aes(x= fct_reorder(Countries,doses),y= doses))+
+   geom_bar(stat='identity',aes(fill= doses))+
+   coord_flip()+ 
+   xlab("Countries")+ 
+   ylab("doses(per million)")+ 
+   labs(title= "BUSA8090 Assignment 3 Question 2",
+        subtitle = "COVID-19 vaccine doses administered, April 20 2021",
+        caption = "Total number of vaccination doses administrated")+
+   geom_text(aes(label=paste(doses,"million"), y=200), hjust=0.5, color="red",size=02)+ #modified text outside bar 
+         theme(plot.title = element_text(size = 12),
+               plot.subtitle = element_text(size=10), 
+               plot.caption = element_text(size=8),
+               text = element_text(size = 10, colour = "black"),
+               axis.text.x = element_text(size = 12),
+               legend.title = element_text(size = 10),
+               legend.text = element_text(size=8),
+               ) 
